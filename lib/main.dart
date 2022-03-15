@@ -22,9 +22,24 @@ class TodoListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('リスト一覧画面'),
-      ),
+      appBar: AppBar(title: Text('リスト一覧')),
+      body: ListView(children: [
+        Card(
+          child: ListTile(
+            title: Text('病院に行く'),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            title: Text('MTGに参加する'),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            title: Text('スーパーに行く'),
+          ),
+        ),
+      ],),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
