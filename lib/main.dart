@@ -5,8 +5,6 @@ void main() {
 }
 
 class MyTodoApp extends StatelessWidget {
-  const MyTodoApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,52 +12,63 @@ class MyTodoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const TodoListPage(),
+      home: TodoListPage(),
     );
   }
 }
 
 // リスト一覧Widget
-class TodoListPage extends StatelessWidget {
-  const TodoListPage({Key? key}) : super(key: key);
+class TodoListPage extends StatefulWidget {
+  @override
+  _TodoListPageState createState() => _TodoListPageState();
+}
 
+class _TodoListPageState extends State<TodoListPage> {
+  List<String> todoList = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('リスト一覧')),
-      body: ListView(children: const [
-        Card(
-          child: ListTile(
-            title: Text('病院に行く'),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text('MTGに参加する'),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text('スーパーに行く'),
-          ),
-        ),
-      ],),
+      appBar: AppBar(title: Text('リスト一覧')),
+      body: ListView.builder(
+        itemCount: todoList.length,
+        itemBuilder: (context, index) {
+          return Card(
+            child: ListTile(
+              title: Text(todoList[index]),
+            ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
+        onPressed: () async {
+          final newListText = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) {
               return TodoAddPage();
             }),
           );
+          if (newListText != null) {
+            // キャンセルした場合は newListText が null となるので注意
+            setState(() {
+              // リスト追加
+              todoList.add(newListText);
+            });
+          }
         },
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }
 }
 
+class TodoAddPage extends StatefulWidget {
+  @override
+  _TodoAddPageState createState() => _TodoAddPageState();
+}
+
 // リスト追加Widget
-class TodoAddPage extends StatelessWidget {
+class _TodoAddPageState extends State<TodoAddPage> {
+  String _text = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +80,15 @@ class TodoAddPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(),
+            Text(_text, style: TextStyle(color: Colors.blue)),
+            SizedBox(height: 8),
+            TextField(
+              onChanged: (String value) {
+                setState(() {
+                  _text = value;
+                });
+              },
+            ),
             const SizedBox(height: 8),
             Container(
               width: double.infinity,
@@ -79,8 +96,10 @@ class TodoAddPage extends StatelessWidget {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blue),
                 ),
-                onPressed: () {},
-                child: const Text('リスト追加', style: TextStyle(color: Colors.white)),
+                onPressed: () {
+                  Navigator.of(context).pop(_text);
+                },
+                child: Text('リスト追加', style: TextStyle(color: Colors.white)),
               ),
             ),
             const SizedBox(height: 8),
