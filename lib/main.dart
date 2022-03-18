@@ -35,6 +35,19 @@ class _TodoListPageState extends State<TodoListPage> {
           return Card(
             child: ListTile(
               title: Text(todoList[index]),
+              trailing: Wrap(
+                spacing: 12,
+                children: [
+                  Icon(
+                    Icons.delete_forever_sharp,
+                    color: Colors.blue,
+                  ),
+                  Icon(
+                    Icons.create_sharp,
+                    color: Colors.blue,
+                  )
+                ],
+              )
             ),
           );
         },
