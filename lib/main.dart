@@ -34,21 +34,39 @@ class _TodoListPageState extends State<TodoListPage> {
         itemBuilder: (context, index) {
           return Card(
             child: ListTile(
-              title: Text(todoList[index]),
-              trailing: Wrap(
-                spacing: 12,
-                children: [
-                  Icon(
-                    Icons.delete_forever_sharp,
-                    color: Colors.blue,
-                  ),
-                  Icon(
-                    Icons.create_sharp,
-                    color: Colors.blue,
-                  )
-                ],
-              )
-            ),
+                title: Text(todoList[index]),
+                trailing: Wrap(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.delete_forever_sharp),
+                      color: Colors.blue,
+                      onPressed: () {
+                        print("delete");
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("このタスクを削除しますか？"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        print("削除");
+                                      },
+                                      child: const Text('削除'))
+                                ],
+                              );
+                            });
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.create_sharp),
+                      color: Colors.blue,
+                      onPressed: () {
+                        print("edit");
+                      },
+                    )
+                  ],
+                )),
           );
         },
       ),
