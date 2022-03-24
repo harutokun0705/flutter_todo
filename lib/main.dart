@@ -50,7 +50,10 @@ class _TodoListPageState extends State<TodoListPage> {
                                 actions: [
                                   TextButton(
                                       onPressed: () {
-                                        print("削除");
+                                        setState(() {
+                                          todoList.removeAt(index);
+                                        });
+                                        Navigator.pop(context);
                                       },
                                       child: const Text('削除'))
                                 ],
