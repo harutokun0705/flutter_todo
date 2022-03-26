@@ -25,6 +25,7 @@ class TodoListPage extends StatefulWidget {
 
 class _TodoListPageState extends State<TodoListPage> {
   List<String> todoList = [];
+  String _text = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +67,37 @@ class _TodoListPageState extends State<TodoListPage> {
                       color: Colors.blue,
                       onPressed: () {
                         print("edit");
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("タスク名を変更する"),
+                                actions: [
+                                  TextField(
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        _text = value;
+                                      });
+                                      print(_text);
+                                      print(index);
+                                      print(todoList[index]);
+                                    },
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        print(_text);
+                                        // setState(() {
+                                        //   print("push");
+                                        // });
+                                        setState(() {
+                                          todoList[index] = _text;
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('変更する'))
+                                ],
+                              );
+                            });
                       },
                     )
                   ],
@@ -95,6 +127,8 @@ class _TodoListPageState extends State<TodoListPage> {
 }
 
 class TodoAddPage extends StatefulWidget {
+  const TodoAddPage({Key? key}) : super(key: key);
+
   @override
   _TodoAddPageState createState() => _TodoAddPageState();
 }
