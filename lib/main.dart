@@ -1,3 +1,5 @@
+// import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,9 +25,16 @@ class TodoListPage extends StatefulWidget {
   _TodoListPageState createState() => _TodoListPageState();
 }
 
+class Task {
+  String text;
+  bool isDone;
+  Task(this.text, this.isDone);
+}
+
 class _TodoListPageState extends State<TodoListPage> {
-  List<String> todoList = [];
+  List todoList = [];
   String _text = '';
+  bool isChecked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +44,15 @@ class _TodoListPageState extends State<TodoListPage> {
         itemBuilder: (context, index) {
           return Card(
             child: ListTile(
-                title: Text(todoList[index]),
+                leading: Checkbox(
+                  value: todoList[index]["isDone"],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      todoList[index]["isDone"] = value!;
+                    });
+                  },
+                ),
+                title: Text(todoList[index]["text"]),
                 trailing: Wrap(
                   children: [
                     IconButton(
@@ -90,7 +107,7 @@ class _TodoListPageState extends State<TodoListPage> {
                                         //   print("push");
                                         // });
                                         setState(() {
-                                          todoList[index] = _text;
+                                          todoList[index]["text"] = _text;
                                         });
                                         Navigator.pop(context);
                                       },
@@ -136,6 +153,7 @@ class TodoAddPage extends StatefulWidget {
 // リスト追加Widget
 class _TodoAddPageState extends State<TodoAddPage> {
   String _text = '';
+  // List tasks = [];
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +183,12 @@ class _TodoAddPageState extends State<TodoAddPage> {
                   backgroundColor: MaterialStateProperty.all(Colors.blue),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop(_text);
+                  Map newItem = {"text": _text, "isDone": false};
+                  print(newItem);
+                  // tasks.add(newItem);
+                  // tasks.insert(0, newItem);
+                  // print(tasks);
+                  Navigator.of(context).pop(newItem);
                 },
                 child: Text('リスト追加', style: TextStyle(color: Colors.white)),
               ),
