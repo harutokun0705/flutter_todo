@@ -1,6 +1,9 @@
 // import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+
+
 
 void main() {
   runApp(MyTodoApp());
@@ -38,7 +41,7 @@ class _TodoListPageState extends State<TodoListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('リスト一覧')),
+      appBar: AppBar(title: Text('ToDo')),
       body: ListView.builder(
         itemCount: todoList.length,
         itemBuilder: (context, index) {
@@ -153,6 +156,7 @@ class TodoAddPage extends StatefulWidget {
 // リスト追加Widget
 class _TodoAddPageState extends State<TodoAddPage> {
   String _text = '';
+  bool isDisabled = true;
   // List tasks = [];
 
   @override
@@ -168,11 +172,23 @@ class _TodoAddPageState extends State<TodoAddPage> {
           children: <Widget>[
             Text(_text, style: TextStyle(color: Colors.blue)),
             SizedBox(height: 8),
-            TextField(
+            TextFormField(
               onChanged: (String value) {
                 setState(() {
                   _text = value;
+                  if (value.isNotEmpty) {
+                    isDisabled = false;
+                    return;
+                  } else {
+                    isDisabled = true;
+                    return;
+                  }
                 });
+              },
+              maxLength: 25,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                return value!.isEmpty ? "文字を入力してください" : null;
               },
             ),
             const SizedBox(height: 8),
@@ -180,16 +196,19 @@ class _TodoAddPageState extends State<TodoAddPage> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  backgroundColor: MaterialStateProperty.all(
+                      isDisabled ? Colors.grey : Colors.blue),
                 ),
-                onPressed: () {
-                  Map newItem = {"text": _text, "isDone": false};
-                  print(newItem);
-                  // tasks.add(newItem);
-                  // tasks.insert(0, newItem);
-                  // print(tasks);
-                  Navigator.of(context).pop(newItem);
-                },
+                onPressed: isDisabled
+                    ? null
+                    : () {
+                        Map newItem = {"text": _text, "isDone": false};
+                        print(newItem);
+                        // tasks.add(newItem);
+                        // tasks.insert(0, newItem);
+                        // print(tasks);
+                        Navigator.of(context).pop(newItem);
+                      },
                 child: Text('リスト追加', style: TextStyle(color: Colors.white)),
               ),
             ),
